@@ -1,6 +1,7 @@
 package com.flow.moviesearchnative.view.adapter
 
 import android.content.Context
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,9 +60,13 @@ class MovieListAdapter(private val context: Context, private val MainList: Mutab
 
         fun bind(item: MovieListItem) {
             Glide.with(itemView).load(item.image).into(movieImage)
-            movieTitle.text = item.title
-            movieDate.text = item.pubDate
-            movieRating.text = item.userRating
+            movieTitle.text = "제목 : " + stripHtml(item.title)
+            movieDate.text = "출시 : " + item.pubDate
+            movieRating.text = "평점 : " + item.userRating
+        }
+
+        fun stripHtml(html : String) : String {
+            return Html.fromHtml(html).toString()
         }
 
     }

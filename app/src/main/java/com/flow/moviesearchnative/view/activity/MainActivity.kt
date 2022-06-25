@@ -1,9 +1,13 @@
 package com.flow.moviesearchnative.view.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import com.flow.moviesearchnative.databinding.ActivityMainBinding
 import com.flow.moviesearchnative.viewModel.MovieHistoryKeywordsViewModel
@@ -33,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnSearchMovie.setOnClickListener {
             apiGetNaverMovieSearchData(binding.etSearchMovie.text.toString())
             apiInsertHistoryKeywords(binding.etSearchMovie.text.toString())
+
+            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.etSearchMovie.windowToken, 0)
         }
 
         // 검색기록 눌렀을 때 이벤트
