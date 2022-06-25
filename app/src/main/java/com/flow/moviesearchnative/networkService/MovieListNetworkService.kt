@@ -1,3 +1,9 @@
+/*
+    Category    : Service
+    Title       : API 요청 Service
+    Description : API에 전송정보를 담아서 Rest API 방식으로 데이터를 요청
+*/
+
 package com.flow.moviesearchnative.networkService
 
 import com.flow.moviesearchnative.MovieList
@@ -9,6 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 interface MovieListNetworkService {
+    // 네이버 영화 API에서 데이터 요청
     @GET("/v1/search/movie.json")
     fun getRequestMsg(
         @Header("X-Naver-Client-Id") apiId:String,
@@ -19,6 +26,7 @@ interface MovieListNetworkService {
     companion object {
         val baseUrl = "https://openapi.naver.com" // root 주소
 
+        // 네트워크 서비스 정의 함수
         fun create() : MovieListNetworkService {
 
             // retrofit2 api를 통해서 api 호출

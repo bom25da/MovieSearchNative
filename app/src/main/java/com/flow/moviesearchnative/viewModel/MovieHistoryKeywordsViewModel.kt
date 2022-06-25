@@ -1,3 +1,9 @@
+/*
+    Category    : View Model
+    Title       : 영화 검색 기록 화면 처리
+    Description : View와 Model의 중간 역할
+*/
+
 package com.flow.moviesearchnative.viewModel
 
 import android.app.Activity

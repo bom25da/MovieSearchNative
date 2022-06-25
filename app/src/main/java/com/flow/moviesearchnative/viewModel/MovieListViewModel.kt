@@ -1,3 +1,9 @@
+/*
+    Category    : View Model
+    Title       : 영화 검색 리스트 화면 처리
+    Description : View와 Model의 중간 역할
+*/
+
 package com.flow.moviesearchnative.viewModel
 
 import android.app.Application
@@ -32,14 +38,14 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
             override fun onResponse(call: Call<MovieList>, response: Response<MovieList>) {
                 val items = response.body()!!.items
 
-                // 2. api 처리 후 데이터를 리스트화함
+                // api 처리 후 데이터를 리스트화함
                 val mAdapter = MovieListAdapter(context, items)
                 binding.rv1.adapter = mAdapter
                 val layout = LinearLayoutManager(context)
                 binding.rv1.layoutManager = layout
                 binding.rv1.setHasFixedSize(true)
 
-                // 3. 리스트 항목 클릭했을 때 이벤트
+                // 리스트 항목 클릭했을 때 이벤트
                 mAdapter.setMyItemClickListener(object : MovieListAdapter.MyItemClickListener {
                     override fun onItemClick(position: Int) {
                         Log.d("Link:", items[position].link)
