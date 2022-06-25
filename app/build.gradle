@@ -32,6 +32,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    configurations { implementation.exclude group: 'org.jetbrains', module: 'annotations' }
 }
 
 dependencies {
@@ -49,4 +50,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.4'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.4'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.4'
+    implementation 'com.wefika:flowlayout:0.4.1'
 }

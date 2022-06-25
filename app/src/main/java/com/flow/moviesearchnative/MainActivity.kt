@@ -1,5 +1,6 @@
 package com.flow.moviesearchnative
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.flow.moviesearchnative.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
 import retrofit2.Call
@@ -25,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val context = this
-    private var items = mutableListOf<MovieListItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,44 +38,29 @@ class MainActivity : AppCompatActivity() {
 //            MovieListItem("https://ssl.pstatic.net/imgmovie/mdi/mit110/2109/210934_P01_152544.jpg", "무간도2", "2021", "8.00"),
 //            MovieListItem("https://ssl.pstatic.net/imgmovie/mdi/mit110/2109/210934_P01_152544.jpg", "무간도3", "2022", "6.00")
 //        )
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val keywords = result.data?.getStringExtra("data")
+
+                if (keywords != null) {
+                    apiGetNaverMovieSearchData(keywords)
+                }
+            }
+        }
 
         // 검색 버튼 눌렀을 때 이벤트
         binding.btnSearchMovie.setOnClickListener {
 
             var keywords = binding.etSearchMovie.text.toString()
 
+            apiGetNaverMovieSearchData(keywords)
+            apiInsertHistoryKeywords(keywords)
+        }
 
-                //CoroutineScope(Main).launch{
-
-                //var items = apiGetNaverMovieSearchData(keywords)
-
-//                var items = async {
-//                    // 1. 네이버 api 통신 수행
-//
-//                }.await()
-
-                apiGetNaverMovieSearchData(keywords) // api 수행 함수
-
-                // 2. api 처리 후 데이터를 리스트화함
-                val mAdapter = MovieListAdapter(context, items)
-                binding.rv1.adapter = mAdapter
-                val layout = LinearLayoutManager(context)
-                binding.rv1.layoutManager = layout
-                binding.rv1.setHasFixedSize(true)
-
-                // 3. 리스트 항목 클릭했을 때 이벤트
-                mAdapter.setMyItemClickListener(object : MovieListAdapter.MyItemClickListener {
-                    override fun onItemClick(position: Int) {
-                        Log.d("Link:", items[position].link)
-
-                        val myIntent = Intent(applicationContext, MovieDetailActivity::class.java)
-                        myIntent.putExtra("data", items[position].link)
-                        startActivity(myIntent)
-                    }
-                })
-
-                apiInsertHistoryKeywords(keywords)
-            //}
+        // 검색기록 눌렀을 때 이벤트
+        binding.btnSearchHistory.setOnClickListener {
+            val myIntent = Intent(applicationContext, MovieHistoryKeywordsActivity::class.java)
+            resultLauncher.launch(myIntent)
         }
     }
 
@@ -109,12 +95,28 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d("success", response.body()!!.items.toString())
 
-                rtnItems = response.body()!!.items
+                val items = response.body()!!.items
                 Log.d("success", "0")
+
+                // 2. api 처리 후 데이터를 리스트화함
+                val mAdapter = MovieListAdapter(context, items)
+                binding.rv1.adapter = mAdapter
+                val layout = LinearLayoutManager(context)
+                binding.rv1.layoutManager = layout
+                binding.rv1.setHasFixedSize(true)
+
+                // 3. 리스트 항목 클릭했을 때 이벤트
+                mAdapter.setMyItemClickListener(object : MovieListAdapter.MyItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        Log.d("Link:", items[position].link)
+
+                        val myIntent = Intent(applicationContext, MovieDetailActivity::class.java)
+                        myIntent.putExtra("data", items[position].link)
+                        startActivity(myIntent)
+                    }
+                })
             }
         })
-
-        items = rtnItems
     }
 
     private fun apiInsertHistoryKeywords(keywords: String) {
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         val keywordsInputTime = culTime.format(culTimeFormatter)
 
         val baseUrl = "http://125.128.10.133:8080" // root 주소
-        var postBody = MovieHistoryKeywordsItem(keywords, keywordsInputTime)
+        var postBody = MovieHistoryKeywordsItem(1, keywords, keywordsInputTime)
 
         // retrofit2 api를 통해서 api 호출
         val retrofit = Retrofit.Builder()
