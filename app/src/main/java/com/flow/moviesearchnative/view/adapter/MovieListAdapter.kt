@@ -1,26 +1,15 @@
-package com.flow.moviesearchnative
+package com.flow.moviesearchnative.view.adapter
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.flow.moviesearchnative.databinding.MovieSearchListBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
+import com.flow.moviesearchnative.MovieListItem
+import com.flow.moviesearchnative.R
 
 class MovieListAdapter(private val context: Context, private val MainList: MutableList<MovieListItem>) : RecyclerView.Adapter<MovieListAdapter.ViewHolder>() {
 

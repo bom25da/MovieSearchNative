@@ -1,18 +1,13 @@
-package com.flow.moviesearchnative
+package com.flow.moviesearchnative.view.activity
 
 import android.os.Bundle
-import android.os.Message
-import android.util.Log
-import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.flow.moviesearchnative.databinding.MovieDetailBinding
-import com.flow.moviesearchnative.databinding.MovieSearchListBinding
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieListDetailActivity : AppCompatActivity() {
     private lateinit var datas : String
     private lateinit var binding: MovieDetailBinding
     private lateinit var mContainer : FrameLayout
@@ -26,7 +21,6 @@ class MovieDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         datas = intent.getSerializableExtra("data") as String
-
 
         val webView = binding.webView
         //webView.webViewClient = WebViewClient()

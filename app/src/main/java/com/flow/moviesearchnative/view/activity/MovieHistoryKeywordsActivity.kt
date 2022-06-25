@@ -1,15 +1,16 @@
-package com.flow.moviesearchnative
+package com.flow.moviesearchnative.view.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.Observer
+import com.flow.moviesearchnative.MovieHistoryKeywordsItem
+import com.flow.moviesearchnative.networkService.MovieHistoryKeywordsNetworkService
 import com.flow.moviesearchnative.databinding.MovieHistoryKeywordsBinding
-import com.google.android.material.button.MaterialButton
+import com.flow.moviesearchnative.viewModel.MovieHistoryKeywordsViewModel
+import com.flow.moviesearchnative.viewModel.MovieListViewModel
 import com.wefika.flowlayout.FlowLayout
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,7 +30,46 @@ class MovieHistoryKeywordsActivity : AppCompatActivity() {
         apiGetMovieHistoryKeywords()
     }
 
+    private fun apiGetMovieHistoryKeywords(){
+        val vm = MovieHistoryKeywordsViewModel(application)
+        vm.apiGetMovieHistoryKeywords(binding)
 
+        vm.items.observe(this, Observer {
+            it.forEach {
+                addButton(it.keywords)
+            }
+        })
+    }
+
+    private fun addButton (title : String) {
+        val buttonView = binding.buttonview
+        val dynamicButton = Button(context)
+
+        val layoutParams = FlowLayout.LayoutParams(
+            FlowLayout.LayoutParams.WRAP_CONTENT,
+            FlowLayout.LayoutParams.WRAP_CONTENT,
+        )
+
+        dynamicButton.layoutParams = layoutParams
+        dynamicButton.text = title
+        layoutParams.setMargins(changeDP(5), changeDP(5), changeDP(5), 0)
+
+        buttonView.addView(dynamicButton)
+
+        dynamicButton.setOnClickListener {
+            val myIntent = Intent(context, MainActivity::class.java)
+            myIntent.putExtra("data", title)
+            setResult(Activity.RESULT_OK, myIntent)
+            finish()
+        }
+    }
+
+    fun changeDP(value : Int) : Int{
+        var displayMetrics = resources.displayMetrics
+        var dp = Math.round(value * displayMetrics.density)
+        return dp
+    }
+/*
     private fun apiGetMovieHistoryKeywords(){
 
         val baseUrl = "http://125.128.10.133:8080" // root 주소
@@ -93,4 +133,6 @@ class MovieHistoryKeywordsActivity : AppCompatActivity() {
             }
         })
     }
+
+ */
 }
